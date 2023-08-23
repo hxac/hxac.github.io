@@ -1,0 +1,205 @@
+/* 页头页脚配置 */
+#page-header {
+  background-color: rgb(44, 51, 56);
+}
+#footer {
+  background-color: rgb(44, 51, 56);
+}
+
+/* 404 页面配置 */
+#error-img{
+  display: none;
+}
+
+/* 搜索框设置 */
+#local-search .search-dialog .local-search-hit-item:before {
+    position: absolute;
+    top: unset;
+    left: 0;
+    width: unset;
+    height: 3em;
+    border: 3px solid #a4d8fa;
+    border-radius: unset;
+    background: transparent;
+    content: '';
+    line-height: 0.5em;
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    -ms-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+}
+#local-search .custom-hr, .search-dialog hr {
+  border: none; /* 移除原有的边框 */
+  height: 2px; /* 设置线条高度 */
+}
+.fontawesomeIcon, .custom-hr:before, #article-container a.headerlink:after, #post .post-copyright:before, #post .post-outdate-notice:before, .note:not(.no-icon)::before, .search-dialog hr:before {
+    display: none;
+    font-weight: 100;
+    font-family: '';
+    text-rendering: 0;
+    -webkit-font-smoothing: 0;
+}
+/* 微调透明度
+ref: https://www.fomal.cn/posts/5389e93f.html
+*/
+:root {
+  --trans-light: rgba(253, 253, 253, 0.88);
+  --trans-dark: rgba(32, 32, 32, 0.88);
+  --border-style: 1px solid rgb(204, 204, 214);
+  --backdrop-filter: blur(6px) saturate(130%);
+}
+/* 首页文章卡片 */
+#recent-posts > .recent-post-item {
+  background: var(--trans-light);
+  backdrop-filter: var(--backdrop-filter);
+  border-radius: 5px;
+  border: var(--border-style);
+}
+
+/* 首页侧栏卡片 */
+#aside-content .card-widget {
+  background: var(--trans-light);
+  backdrop-filter: var(--backdrop-filter);
+  border-radius: 2px;
+  border: var(--border-style);
+}
+
+/* 文章页、归档页、普通页面 */
+div#post,
+div#page,
+div#archive {
+  background: var(--trans-light);
+  backdrop-filter: var(--backdrop-filter);
+  border: var(--border-style);
+  border-radius: 5px;
+}
+
+/* 导航栏 */
+#page-header.nav-fixed #nav {
+  background: rgba(205, 209, 211, 0.75);
+  backdrop-filter: var(--backdrop-filter);
+}
+
+/* 夜间模式遮罩 */
+[data-theme="dark"] #recent-posts > .recent-post-item,
+[data-theme="dark"] #aside-content .card-widget,
+[data-theme="dark"] div#post,
+[data-theme="dark"] div#archive,
+[data-theme="dark"] div#page {
+  background: var(--trans-dark);
+}
+
+/* 导航栏夜间模式 */
+[data-theme="dark"] #page-header.nav-fixed #nav {
+  background: rgba(32, 32, 32, 0.7) !important;
+}
+
+/* 夜间模式页脚页头 */
+[data-theme="dark"] #page-header {
+  background-color: rgb(0, 0, 0);
+}
+
+[data-theme="dark"] #footer {
+  background-color: rgb(0, 0, 0);
+}
+
+/* 夜间模式页脚页头遮罩透明 */
+[data-theme="dark"] #footer::before {
+  background: transparent !important;
+}
+
+[data-theme="dark"] #page-header::before {
+  background: transparent !important;
+}
+
+/* 阅读模式 */
+.read-mode #aside-content .card-widget {
+  background: rgba(158, 204, 171, 0.5) !important;
+}
+.read-mode div#post {
+  background: rgba(158, 204, 171, 0.5) !important;
+}
+
+/* 夜间模式下的阅读模式 */
+[data-theme="dark"] .read-mode #aside-content .card-widget {
+  background: rgba(32, 32, 32, 0.9) !important;
+  color: #ffffff;
+}
+
+[data-theme="dark"] .read-mode div#post {
+  background: rgba(32, 32, 32, 0.9) !important;
+  color: #ffffff;
+}
+/* 横幅 */
+#banner {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+    opacity: 0;
+    transform: translateY(-100px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 999;
+  }
+  
+#bannerAction {
+  margin-left: 10px;
+  cursor: pointer;
+  font-size: 18px;
+  color:#d2b42c;
+}
+/* 下降关键帧 */
+@keyframes bounce-down {
+  0% {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* 上升关键帧 */
+@keyframes bounce-up {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  70% {
+    opacity: 1;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100px);
+  }
+}
+
+#warp_404page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.num_404page {
+  font-size: 200px;
+  color: rgba(197, 197, 197, 0.8);
+  margin-bottom: -50px;
+}
+
+.num_404text {
+  font-size: 40px;
+  color: rgba(199, 199, 199, 0.6);
+}

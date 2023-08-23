@@ -1,0 +1,485 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>OpenWrt LEDE 固件编译 | 只是笔记</title><meta name="author" content="白勺"><meta name="copyright" content="白勺"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="OpenWrt LEDE 固件编译 环境准备   Ubuntu 20  建议 Ubuntu 或者 Debian 系的系统进行编译，方便解决依赖问题    云服务器  下载依赖速度快，优先推荐海外的（带宽充足） 2 x Intel® Xeon® Gold 6133 CPU @ 2.50GHz 4GB Memory    Windows 11 Build 10.0.22621  只要有 openssh">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenWrt LEDE 固件编译">
+<meta property="og:url" content="https://hxac.github.io/2023/08/OpenWrt-LEDE-%E5%9B%BA%E4%BB%B6%E7%BC%96%E8%AF%91/">
+<meta property="og:site_name" content="只是笔记">
+<meta property="og:description" content="OpenWrt LEDE 固件编译 环境准备   Ubuntu 20  建议 Ubuntu 或者 Debian 系的系统进行编译，方便解决依赖问题    云服务器  下载依赖速度快，优先推荐海外的（带宽充足） 2 x Intel® Xeon® Gold 6133 CPU @ 2.50GHz 4GB Memory    Windows 11 Build 10.0.22621  只要有 openssh">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2023-08-01T06:38:31.000Z">
+<meta property="article:modified_time" content="2023-08-23T13:47:00.138Z">
+<meta property="article:author" content="白勺">
+<meta property="article:tag" content="运维">
+<meta name="twitter:card" content="summary"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://hxac.github.io/2023/08/OpenWrt-LEDE-%E5%9B%BA%E4%BB%B6%E7%BC%96%E8%AF%91/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><meta name="google-site-verification" content="MXalOlJ3giNXLmtfFmg3nqhepdzSTZIx2amET1sJ90M"/><meta name="baidu-site-verification" content="codeva-YhIH7IUWWW"/><meta name="msvalidate.01" content="MXalOlJ3giNXLmtfFmg3nqhepdzSTZIx2amET1sJ90M"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"top_n_per_article":1,"unescape":false,"languages":{"hits_empty":"找不到您查询的内容：${query}","hits_stats":"共找到 ${hits} 篇文章"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":200},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":150,"languages":{"author":"作者: 白勺","link":"链接: ","source":"来源: 只是笔记","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: true,
+  percent: {
+    toc: true,
+    rightside: true,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'OpenWrt LEDE 固件编译',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-08-23 21:47:00'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = (url,id = false) => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      if (id) link.id = id
+      link.onerror = reject
+      link.onload = link.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        link.onload = link.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          const now = new Date()
+          const hour = now.getHours()
+          const isNight = hour <= 8 || hour >= 20
+          if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+          else if (t === 'light') activateLightMode()
+          else activateDarkMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><link data-pjax rel="stylesheet" href="/css/custom.css"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="只是笔记" type="application/atom+xml">
+</head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/null" onerror="onerror=null;src='/img/404.png'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a href="/" title="只是笔记"><span class="site-name">只是笔记</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">OpenWrt LEDE 固件编译</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-08-01T06:38:31.000Z" title="发表于 2023-08-01 14:38:31">2023-08-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-08-23T13:47:00.138Z" title="更新于 2023-08-23 21:47:00">2023-08-23</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>12分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="OpenWrt LEDE 固件编译"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>OpenWrt LEDE 固件编译</h1>
+<h2 id="环境准备">环境准备</h2>
+<ul>
+<li>
+<p>Ubuntu 20</p>
+<blockquote>
+<p>建议 Ubuntu 或者 Debian 系的系统进行编译，方便解决依赖问题</p>
+</blockquote>
+</li>
+<li>
+<p>云服务器</p>
+<blockquote>
+<p>下载依赖速度快，优先推荐海外的（带宽充足）<br>
+2 x Intel® Xeon® Gold 6133 CPU @ 2.50GHz<br>
+4GB Memory</p>
+</blockquote>
+</li>
+<li>
+<p>Windows 11 Build 10.0.22621</p>
+<blockquote>
+<p>只要有 openssh，都行</p>
+</blockquote>
+</li>
+</ul>
+<h1>编译</h1>
+<h2 id="环境准备-2">环境准备</h2>
+<ol>
+<li>不建议使用 <code>root</code> 来编译，容易发生很多魔法问题</li>
+<li>建议采用全新环境编译，避免遇上魔法问题</li>
+<li>不建议使用中文编码环境编译，避免遇上魔法问题</li>
+<li>魔法问题，就是虽然有办法应对，可以简单解决就不要复杂化的问题</li>
+</ol>
+<p>一般 VPS 为了图省事，都会安装只有 root 用户的系统，但 lede 这里不能用 root 用户，需要重新创建一个：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看当前是否为 root</span></span><br><span class="line"><span class="built_in">id</span></span><br><span class="line"><span class="comment">#uid=0(root) gid=0(root) groups=0(root)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 给当前用户创建密码</span></span><br><span class="line"><span class="comment">#passwd</span></span><br><span class="line"><span class="comment"># 如果后面 sudo 提示需要密码，请在 root 用户下运行此命令</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 切换到 root 用户</span></span><br><span class="line"><span class="comment"># su root</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 部分采用 root 用户，需要新建一个 用户来编译，这里以 lede 为例</span></span><br><span class="line">useradd -r -m -s /bin/bash lede</span><br><span class="line"></span><br><span class="line"><span class="comment"># 给用户 lede 创建密码</span></span><br><span class="line">passwd lede</span><br><span class="line"></span><br><span class="line"><span class="comment"># ======= lede 用户下执行命令 =======</span></span><br><span class="line"><span class="comment"># 进入 lede 用户</span></span><br><span class="line">su lede</span><br><span class="line"></span><br><span class="line"><span class="comment"># 进入用户目录</span></span><br><span class="line"><span class="built_in">cd</span> ~</span><br><span class="line"><span class="comment"># ======= lede 用户下执行命令 =======</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 锁定用户 lede</span></span><br><span class="line">passwd lede –l</span><br><span class="line"><span class="comment"># 释放用户 lede</span></span><br><span class="line">passwd lede –u</span><br><span class="line"><span class="comment"># 删除用户 lede</span></span><br><span class="line">userdel -r lede</span><br></pre></td></tr></table></figure>
+<p>依赖库比较多，在服务器里面可以开个 Ubuntu 的 Docker 镜像专门用来编译，防止破坏环境</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#换源</span></span><br><span class="line"><span class="comment">#sudo sed -i &#x27;s|deb.debian.org|mirrors.cloud.tencent.com|g&#x27; /etc/apt/sources.list</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新软件源</span></span><br><span class="line">sudo apt update</span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新软件</span></span><br><span class="line"><span class="comment">#sudo apt upgrade</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装 screen</span></span><br><span class="line">sudo apt install -y screen</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启用 screen</span></span><br><span class="line">screen -S     </span><br><span class="line"><span class="comment"># 挂回 openwrt</span></span><br><span class="line"><span class="comment">#screen -d openwrt</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装编译依赖</span></span><br><span class="line"><span class="comment">#sudo apt install -y ack antlr3 asciidoc autoconf automake autopoint binutils \ </span></span><br><span class="line"><span class="comment">#                    bison build-essential bzip2 ccache cmake cpio curl \ </span></span><br><span class="line"><span class="comment">#                    device-tree-compiler fastjar flex gawk gettext \ </span></span><br><span class="line"><span class="comment">#                    gcc-multilib g++-multilib git gperf haveged help2man \</span></span><br><span class="line"><span class="comment">#                    intltool libc6-dev-i386 libelf-dev libglib2.0-dev \</span></span><br><span class="line"><span class="comment">#                    libgmp3-dev libltdl-dev libmpc-dev libmpfr-dev \</span></span><br><span class="line"><span class="comment">#                    libncurses5-dev libncursesw5-dev libreadline-dev \</span></span><br><span class="line"><span class="comment">#                    libssl-dev libtool lrzsz mkisofs msmtp nano ninja-build \</span></span><br><span class="line"><span class="comment">#                    p7zip p7zip-full patch pkgconf python2.7 python3 \</span></span><br><span class="line"><span class="comment">#                    python3-pyelftools libpython3-dev qemu-utils rsync scons \</span></span><br><span class="line"><span class="comment">#                    squashfs-tools subversion swig texinfo uglifyjs upx-ucl \</span></span><br><span class="line"><span class="comment">#                    unzip vim wget xmlto xxd zlib1g-dev python3-setuptools</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置时区</span></span><br><span class="line">sudo timedatectl set-timezone <span class="string">&#x27;Asia/Shanghai&#x27;</span></span><br><span class="line"></span><br><span class="line">dependencies=(ack antlr3 asciidoc autoconf automake autopoint binutils bison </span><br><span class="line">              build-essential bzip2 ccache cmake cpio curl device-tree-compiler</span><br><span class="line">              fastjar flex gawk gettextgcc-multilib g++-multilib git gperf</span><br><span class="line">              haveged help2man intltool libc6-dev-i386 libelf-dev libglib2.0-dev</span><br><span class="line">              libgmp3-dev libltdl-dev libmpc-dev libmpfr-devlibncurses5-dev</span><br><span class="line">              libncursesw5-dev libreadline-dev libssl-dev libtool lrzsz mkisofs</span><br><span class="line">              msmtp nano ninja-build p7zip p7zip-full patch pkgconf python2.7</span><br><span class="line">              python3 python3-pyelftools libpython3-dev qemu-utils rsync scons</span><br><span class="line">              squashfs-tools subversion swig texinfo uglifyjs upx-ucl</span><br><span class="line">              unzip vim wget xmlto xxd zlib1g-dev python3-setuptools</span><br><span class="line">             )</span><br><span class="line"><span class="keyword">for</span> dependency <span class="keyword">in</span> <span class="string">&quot;<span class="variable">$&#123;dependencies[@]&#125;</span>&quot;</span>; <span class="keyword">do</span></span><br><span class="line">    sudo apt-get install -y <span class="string">&quot;<span class="variable">$dependency</span>&quot;</span></span><br><span class="line">done6</span><br></pre></td></tr></table></figure>
+<p>如果在安装依赖，或者下面步骤关闭了终端，或者丢失了连接，都可以通过下面命令连回，并且不会中断命令执行。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">screen -r openwrt</span><br></pre></td></tr></table></figure>
+<h2 id="源码准备">源码准备</h2>
+<p>源码准备需要连接 GitHub，最好在出海带宽富裕的时候使用（10MB/s）</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 拉取源码</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/coolsnowwolf/lede</span><br><span class="line"></span><br><span class="line"><span class="built_in">cd</span> lede/</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编辑 feeds.conf</span></span><br><span class="line"><span class="comment"># 可以去掉注释或者添加新的 feed，里面是一些配置好的软件和驱动</span></span><br><span class="line">vi feeds.conf.default</span><br><span class="line"></span><br><span class="line"><span class="comment"># 也可以追加一些源</span></span><br><span class="line"><span class="built_in">cat</span> &gt;&gt; feeds.conf.default &lt;&lt;<span class="string">EOF</span></span><br><span class="line"><span class="string">src-git kenzo https://github.com/kenzok8/openwrt-packages</span></span><br><span class="line"><span class="string">src-git nas https://github.com/linkease/nas-packages.git</span></span><br><span class="line"><span class="string">src-git jerrykuku https://github.com/jerrykuku/openwrt-package</span></span><br><span class="line"><span class="string">EOF</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 更新 feeds 源</span></span><br><span class="line">./scripts/feeds update -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># 安装 feeds 源</span></span><br><span class="line">./scripts/feeds install -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改默认主题</span></span><br><span class="line">sed -i <span class="string">&#x27;s|luci-theme-bootstrap|luci-theme-argon|&#x27;</span> feeds/luci/collections/luci/Makefile</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改作 LAN 口 IP</span></span><br><span class="line">sed -i <span class="string">&#x27;s|192.168.1.1|10.0.0.1|g&#x27;</span> package/base-files/files/bin/config_generate</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改主机名</span></span><br><span class="line">sed -i <span class="string">&#x27;s|OpenWrt|mywrt|g&#x27;</span> package/base-files/files/bin/config_generate</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改为中国标准时区</span></span><br><span class="line">sed -i <span class="string">&#x27;s|UTC|CST|g&#x27;</span> package/base-files/files/bin/config_generate</span><br></pre></td></tr></table></figure>
+<h2 id="编译目标配置">编译目标配置</h2>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make menuconfig</span><br></pre></td></tr></table></figure>
+<p>需要从上到下配置的为以下几个选项，后面几个是需要添加进去的软件包，可以根据实际情况添加。</p>
+<table>
+<thead>
+<tr>
+<th>原文</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Target System</td>
+<td>编译目标架构（处理器厂商）</td>
+</tr>
+<tr>
+<td>Subtarget</td>
+<td>细分处理器类型</td>
+</tr>
+<tr>
+<td>Target Profile</td>
+<td>细分硬件类型（用在什么板子上）</td>
+</tr>
+<tr>
+<td>Target Images</td>
+<td>编译生产的镜像格式/打包方式</td>
+</tr>
+<tr>
+<td>Firmware</td>
+<td>硬件驱动</td>
+</tr>
+<tr>
+<td>Development</td>
+<td>开发工具（gcc）</td>
+</tr>
+<tr>
+<td>Languages</td>
+<td>开发语言（Python）</td>
+</tr>
+<tr>
+<td>Libraries</td>
+<td>依赖库（加密解密库）</td>
+</tr>
+<tr>
+<td>LuCI</td>
+<td>[重点] LuCI 的一大堆东西，插件</td>
+</tr>
+<tr>
+<td>Multimedia</td>
+<td>媒体解码器（  FFmpeg）</td>
+</tr>
+<tr>
+<td>Network</td>
+<td>网络相关的各种软件</td>
+</tr>
+<tr>
+<td>Sound</td>
+<td>音频解码器</td>
+</tr>
+<tr>
+<td>Utilities</td>
+<td>系统工具</td>
+</tr>
+</tbody>
+</table>
+<p>关于 LuCI 这一部分，进入 LuCI --&gt; Applications 可以自定义更多的插件</p>
+<p>配置完记得选择 Save 保存为 <code>.config</code> 保存好。</p>
+<p>配置完成后需要下载编译目标所需的 dll 库：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># V=s 是 openwrt 需要的参数，建议 8 线程以缓解服务器压力</span></span><br><span class="line">make -j8 download V=s</span><br></pre></td></tr></table></figure>
+<h2 id="编译">编译</h2>
+<p>一般比较久，1h 起步，对于云服务器务必采用 screen 防止意外断流带来的编译中断。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 非 root 用户</span></span><br><span class="line">make -j$(<span class="built_in">nproc</span>) V=s</span><br><span class="line"><span class="comment"># root 用户</span></span><br><span class="line"><span class="comment">#make FORCE_UNSAFE_CONFIGURE=1 -j$(nproc) V=s</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 找到到编译目标</span></span><br><span class="line"><span class="built_in">cd</span> bin/targets/</span><br></pre></td></tr></table></figure>
+<p>编译完成后在 bin/targets/ 下可以找到对应的编译目标</p>
+<table>
+<thead>
+<tr>
+<th>文件名</th>
+<th>说明</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>xxx-generic-squashfs-combined.img.gz</td>
+<td>带引导分区文件</td>
+<td>直接刷入</td>
+</tr>
+<tr>
+<td>xxx-generic-squashfs-combined.vmdk</td>
+<td>带引导分区的 Vmware 虚拟磁盘</td>
+<td>虚拟机</td>
+</tr>
+<tr>
+<td>xxx-rootfs-squashfs.img.gz</td>
+<td>分区文件，无引导</td>
+<td>升级</td>
+</tr>
+<tr>
+<td>xxx-generic-squashfs-combined-efi.img.gz</td>
+<td>带 EFI 引导分区文件</td>
+<td>直接刷入</td>
+</tr>
+<tr>
+<td>xxx-ext4-combined.img.gz</td>
+<td>ext4 分区文件，无引导</td>
+<td>升级</td>
+</tr>
+<tr>
+<td>xxx-combined-squashfs.iso</td>
+<td>镜像</td>
+<td>直接刷入</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>注意，这里的 <code>img.gz</code> 后缀均为压缩文件，需要解压缩后刷入系统</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 解压后会删除原文件</span></span><br><span class="line">gzip -d *.img.gz</span><br><span class="line"><span class="comment"># 解压后不删除原文件</span></span><br><span class="line">gzip -dk *.img.gz</span><br></pre></td></tr></table></figure>
+</blockquote>
+<h2 id="二次编译">二次编译</h2>
+<p>一次编译好后在第二次会根据配置的 <code>.conf</code> 进行编译，可以设置定时任务每天编译。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 更新</span></span><br><span class="line"><span class="built_in">cd</span> lede/</span><br><span class="line"></span><br><span class="line"><span class="comment"># Git 仓库更新</span></span><br><span class="line">git pull</span><br><span class="line"></span><br><span class="line"><span class="comment"># 订阅包源更新</span></span><br><span class="line">./scripts/feeds update -a</span><br><span class="line"></span><br><span class="line">./scripts/feeds install -a</span><br><span class="line"></span><br><span class="line"><span class="comment"># 清理旧文件</span></span><br><span class="line"><span class="comment">#make clean</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载源码</span></span><br><span class="line">make -j8 download V=s</span><br><span class="line"></span><br><span class="line"><span class="comment"># 编译</span></span><br><span class="line">make -j$(<span class="built_in">nproc</span>) V=s</span><br></pre></td></tr></table></figure>
+<h1>使用 Action 编译</h1>
+<p>Github Action 进行云构建<br>
+<a target="_blank" href="https://hxac.github.io/go/#aHR0cHM6Ly9naXRodWIuY29tL1AzVEVSWC9BY3Rpb25zLU9wZW5XcnQvZ2VuZXJhdGU=" rel="noopener external nofollow noreferrer">https://github.com/P3TERX/Actions-OpenWrt/generate</a></p>
+<p>当然还有一种玩法就是用 act 进行本地构建：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">curl -s https://raw.githubusercontent.com/nektos/act/master/install.sh | sudo bash</span><br><span class="line"></span><br><span class="line"><span class="comment"># 丢进 /usr/bin 里面</span></span><br><span class="line">sudo <span class="built_in">cp</span> /bin/act /usr/bin/act</span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除</span></span><br><span class="line"><span class="comment"># sudo rm -f /usr/bin/act</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 下载 LEDE Action 项目</span></span><br><span class="line">git <span class="built_in">clone</span> https://github.com/P3TERX/Actions-OpenWrt/tree/main</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看所有能编译的项目</span></span><br><span class="line">act -l</span><br><span class="line"><span class="comment">#Stage  Job ID  Job name  Workflow name   Workflow file       Events</span></span><br><span class="line"><span class="comment">#0      build   build     Build OpenWrt   build-openwrt.yml   repository_dispatch,workflow_dispatch</span></span><br><span class="line"><span class="comment">#0      check   check     Update Checker  update-checker.yml  workflow_dispatch</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 构建</span></span><br><span class="line">act workflow_dispatch</span><br></pre></td></tr></table></figure>
+<h1>一般故障排除</h1>
+<h2 id="编译时故障">编译时故障</h2>
+<h3 id="网络问题">网络问题</h3>
+<ul>
+<li>自己想办法</li>
+<li>等出海带宽闲置时候拉取源码</li>
+<li>用云服务器</li>
+<li>用 Github Action 编译</li>
+</ul>
+<h3 id="root-下编译失败">root 下编译失败</h3>
+<p>无视不安全配置</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make FORCE_UNSAFE_CONFIGURE=1 -j$(<span class="built_in">nproc</span>) V=s</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这会导致编译出来的源码权限混乱，因此不建议用 root 权限编译，会带来极大的安全风险。</p>
+</blockquote>
+<h3 id="重新配置-feeds-后编译错误">重新配置 feeds 后编译错误</h3>
+<p>清理掉 feeds 重新下载，重新编译</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">./scripts/feeds clean</span><br><span class="line">./scripts/feeds update -a</span><br><span class="line">./scripts/feeds install -a</span><br></pre></td></tr></table></figure>
+<h3 id="更换目标架构-出错">更换目标架构/出错</h3>
+<p>需要清理目录</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make dirclean</span><br></pre></td></tr></table></figure>
+<p>或者删除目录重新下载</p>
+<h3 id="内存不足">内存不足</h3>
+<blockquote>
+<p>out of memory</p>
+</blockquote>
+<ul>
+<li>加内存</li>
+<li>换大内存服务器</li>
+<li>加 swapfile</li>
+</ul>
+<p>添加 swapfile 方法</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 创建 1024M 的 /swapfile</span></span><br><span class="line">sudo fallocate -l 1024M /swapfile</span><br><span class="line"></span><br><span class="line"><span class="comment"># 仅所有者可写</span></span><br><span class="line">sudo <span class="built_in">chmod</span> 600 /swapfile</span><br><span class="line"></span><br><span class="line"><span class="comment"># 格式化为交换分区</span></span><br><span class="line">sudo mkswap /swapfile</span><br><span class="line"></span><br><span class="line"><span class="comment"># 启用交换分期</span></span><br><span class="line">sudo swapon /swapfile</span><br><span class="line"><span class="comment"># Setting up swapspace version 1, size = 1024 MiB (1073737728 bytes)</span></span><br><span class="line"><span class="comment">#no label, UUID=220bf9b2-9099-4a4d-b157-bd7f5665f146</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 交换分区大小</span></span><br><span class="line"><span class="comment">#ls -l / | grep swap</span></span><br><span class="line"><span class="comment">#-rw-------   1 root root 1.0G 2023-08-02 10:41 swapfile</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 设置系统启动自动挂载</span></span><br><span class="line">sudo <span class="built_in">echo</span> <span class="string">&#x27;/swapfile none swap defaults 0 0&#x27;</span> &gt;&gt; /etc/fstab</span><br><span class="line"></span><br><span class="line"><span class="comment"># 确认交换分区情况</span></span><br><span class="line"><span class="built_in">cat</span> /proc/swaps</span><br><span class="line"><span class="built_in">cat</span> /proc/meminfo | grep Swap</span><br><span class="line"></span><br><span class="line"><span class="comment"># ======== 以下是删除 ========</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除开机挂载</span></span><br><span class="line">sed -i <span class="string">&#x27;|swapfile|d&#x27;</span> /etc/fstab</span><br><span class="line"></span><br><span class="line"><span class="comment"># 卸载交换分区</span></span><br><span class="line">sudo swapoff /swapfile</span><br><span class="line"></span><br><span class="line"><span class="comment"># 卸载所有交换分区</span></span><br><span class="line"><span class="comment">#sudo swapoff -a</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 删除文件</span></span><br><span class="line">sudo <span class="built_in">rm</span> -f /swapfile</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>提示：在 WSL 下需要将主机的 Chromium 内核的软件全部关闭，以确保能编译成功。 很多次遇上 WSL 里面的编译错误，都是因为主机内存被 Chromium 大量占用。</p>
+</blockquote>
+<h3 id="大小写故障">大小写故障</h3>
+<p>编译时提示不兼容大小写不敏感系统</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Build dependency: OpenWrt can only be built on a case-sensitive filesystem</span><br></pre></td></tr></table></figure>
+<p>常见于 Windows 下进行编译，因为 NTFS 文件系统是大小写不敏感的，而使用 WSL 时又喜欢敲完 <code>wsl</code> 直接回车：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">PS</span> C:\Users\<span class="number">0</span>xac&gt; wsl</span><br><span class="line">/mnt/c/Users/<span class="number">0</span>xac &gt;</span><br></pre></td></tr></table></figure>
+<p>实际工作目录是在主机的用户目录下，自然容易遇到很多奇怪的问题，只需要切换到用户目录下即可：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; <span class="built_in">cd</span> ~</span><br><span class="line">&gt; <span class="built_in">pwd</span></span><br><span class="line">/home/aero</span><br></pre></td></tr></table></figure>
+<h2 id="使用时故障">使用时故障</h2>
+<h3 id="镜像空间不足">镜像空间不足</h3>
+<p>驱动/包多时，会占用大量空间，需要扩大镜像的空间</p>
+<p>在 <code>make menuconfig</code> 中调整</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Target Images ---&gt; (16) Kernel partition size (in MB)</span><br><span class="line">Target Images ---&gt; (160) Root filesystem partition size (in MB) (512)</span><br></pre></td></tr></table></figure>
+<p>Kernel partition size （内核分区）扩大到 256MB<br>
+Root filesystem partition size （根文件分区）扩大到 512MB</p>
+<h3 id="IPv6-支持">IPv6 支持</h3>
+<p>在 <code>make menuconfig</code> 中勾选</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Extra packages ---&gt; ipv6helper</span><br></pre></td></tr></table></figure>
+<p><strong>或者</strong>勾选：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Network  ---&gt;  odhcp6c</span><br><span class="line">Network  ---&gt;  odhcpd-ipv6only</span><br><span class="line">LuCI  ---&gt;  Protocols  ---&gt;  luci-proto-ipv6</span><br><span class="line">LuCI  ---&gt;  Protocols  ---&gt;  luci-proto-ppp</span><br></pre></td></tr></table></figure>
+<h3 id="刷固件后用不了-Wifi">刷固件后用不了 Wifi</h3>
+<p>无法识别 Wifi 网卡，需要确认 <code>Firmware</code> 中的 对应 网卡驱动是否勾上</p>
+<h3 id="换源">换源</h3>
+<p>需要先配置好 <code>ssl</code> 相关套件</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">opkg update</span><br><span class="line">opkg install ca-certificates luci-ssl-openssl</span><br><span class="line"></span><br><span class="line">sed -i <span class="string">&#x27;s|downloads.openwrt.org|mirrors.cloud.tencent.com/lede|&#x27;</span> /etc/opkg/distfeeds.conf</span><br></pre></td></tr></table></figure>
+<h3 id="大文件上传">大文件上传</h3>
+<p>一般 lede 的 WebUI 中上传超过 2GB 的文件都不怎么稳定，推荐使用 <code>ssh</code> 协议下的 <code>scp</code> 进行上传：</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">scp ./230513.img.tar.gz root@10.22.33.1:~/230513.img.tar.gz</span><br></pre></td></tr></table></figure>
+<h3 id="上传写入-eMMC">上传写入 eMMC</h3>
+<p>对于某些板子上带有 eMMC 的，使用 LEDE 的网页写入容易出现故障，这里可以采用手动写入的方法。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 本地，上传 img</span></span><br><span class="line">scp ./230513.img.tar.gz root@10.22.33.1:~/230513.img.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="comment"># 下面进入远端</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 解压镜像</span></span><br><span class="line">tar -vxf 230513.img.tar.gz</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看分区情况，一般从 TF 卡启动 0号是 TF卡，1号才是 eMMC</span></span><br><span class="line">lsblk</span><br><span class="line"><span class="comment">#fdisk -l</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 分区表，变更为 gpt，注意 /dev/mmcblk1 目标不要搞错</span></span><br><span class="line">parted /dev/mmcblk1 mklabel gpt</span><br><span class="line"></span><br><span class="line"><span class="comment"># 格式化分区，变更为 ext4</span></span><br><span class="line">parted /dev/mmcblk1 mkpart sub ext4 0% 100%</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看分区情况，格式化后应该会变</span></span><br><span class="line">lsblk</span><br><span class="line"></span><br><span class="line"><span class="comment"># 写入 img</span></span><br><span class="line"><span class="built_in">dd</span> <span class="keyword">if</span>=/230513.img of=/dev/mmcblk1 bs=1M conv=<span class="built_in">sync</span> status=progress</span><br><span class="line"></span><br><span class="line"><span class="comment"># 刷新设备</span></span><br><span class="line">partprobe /dev/mmcblk2</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看对应的分区是否符合预期</span></span><br><span class="line">lsblk</span><br></pre></td></tr></table></figure>
+<h3 id="分区拓展">分区拓展</h3>
+<p>实际上非常简单，对于有连续未使用的空间，都可以拓展上去</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 注意找到对应的分区</span></span><br><span class="line">lsblk</span><br><span class="line"></span><br><span class="line"><span class="comment"># 注意，最大那个分区一般就是系统分区，索引为 2</span></span><br><span class="line">parted /dev/mmcblk2 2 100%</span><br><span class="line"></span><br><span class="line"><span class="comment"># 拓展文件系统到当前内核上</span></span><br><span class="line">resize2fs /dev/mmcblk2</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>这种方法是无损的，不需要关闭当前系统，然后挂上另外一个系统，进行操作的</p>
+</blockquote>
+<h2 id="文件损坏">文件损坏</h2>
+<blockquote>
+<p>报错： Read Only File system</p>
+</blockquote>
+<p>多出现于宿舍这种经常断电的地方，从结果上看，基本上是：</p>
+<ol>
+<li>文件系统错误</li>
+<li>硬件故障</li>
+<li>只读挂载</li>
+</ol>
+<p>说人话就是是：</p>
+<ol>
+<li>经常断电，拔电式关机，导致文件数据出错</li>
+<li>软件编写有问题，写坏文件系统</li>
+<li>脑子抽了，写了成只读</li>
+</ol>
+<h4 id="只读挂载">只读挂载</h4>
+<p>如果挂载为只读，只需要重新以可读写方式挂载。</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 找到对于的目录</span></span><br><span class="line">mount | grep /dev/sda1</span><br><span class="line"><span class="comment">#/dev/sda1 on /mnt/sda1 type ext4 (rw,relatime,stripe=8191)</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 重新挂载</span></span><br><span class="line">mount -o remount,rw /dev/sda1</span><br></pre></td></tr></table></figure>
+<p>但这对 <code>/</code> 根目录没有用，因为一般 根目录只读，都是文件系统故障，需要用命令进行修复。</p>
+<h4 id="修复文件系统">修复文件系统</h4>
+<p>对于文件系统损坏，可以修复文件系统</p>
+<figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 检测系统日志，寻找报错点</span></span><br><span class="line">dmesg |egrep <span class="string">&quot;ext[2..4]|xfs&quot;</span></span><br><span class="line"><span class="comment"># 找不到没关系</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 找到 / 根目录 或者队友损坏目录 的设备</span></span><br><span class="line">lsblk</span><br><span class="line"></span><br><span class="line"><span class="comment"># 修复根目录挂载的设备，注意是设备，在 /dev/ 下的，不是挂载的目录</span></span><br><span class="line">fsck.ext4 -y /dev/mmcblk1p2</span><br><span class="line"><span class="comment">#fsck.ext3 -y /dev/mmcblk1p2</span></span><br><span class="line"><span class="comment">#fsck.ext2 -y /dev/mmcblk1p2</span></span><br><span class="line"><span class="comment"># 这里要注意文件系统</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 刷新存储设备</span></span><br><span class="line">partprobe /dev/mmcblk1</span><br><span class="line"></span><br><span class="line"><span class="comment"># 如果刷新没有用，需要重启</span></span><br><span class="line">reboot -f</span><br></pre></td></tr></table></figure>
+<h1>参考资料</h1>
+<p>【1】： <a target="_blank" href="https://hxac.github.io/go/#aHR0cHM6Ly93d3cucmlnaHQuY29tLmNuL2ZvcnVtL3RocmVhZC0zNDQ4MjUtMS0xLmh0bWw=" rel="noopener external nofollow noreferrer">https://www.right.com.cn/forum/thread-344825-1-1.html</a><br>
+【2】： <a target="_blank" href="https://hxac.github.io/go/#aHR0cHM6Ly9pbWdraS5jb20vYXJjaGl2ZXMvb3BlbndydC1sZWFuLmh0bWw=" rel="noopener external nofollow noreferrer">https://imgki.com/archives/openwrt-lean.html</a><br>
+【3】： <a target="_blank" href="https://hxac.github.io/go/#aHR0cHM6Ly93d3cuY25ibG9ncy5jb20vZmFuc3lzL2FydGljbGVzLzEyMTQyMjkyLmh0bWw=" rel="noopener external nofollow noreferrer">https://www.cnblogs.com/fansys/articles/12142292.html</a><br>
+【4】： <a target="_blank" href="https://hxac.github.io/go/#aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3d4cTQxMDA3OTgvYXJ0aWNsZS9kZXRhaWxzLzEwNDAwNjk2NA==" rel="noopener external nofollow noreferrer">https://blog.csdn.net/wxq4100798/article/details/104006964</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" href="https://hxac.github.io/go/#aHR0cHM6Ly8weGFjLmNu" rel="noopener external nofollow noreferrer">白勺</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://hxac.github.io/2023/08/OpenWrt-LEDE-%E5%9B%BA%E4%BB%B6%E7%BC%96%E8%AF%91/">https://hxac.github.io/2023/08/OpenWrt-LEDE-固件编译/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://hxac.github.io/go/#aHR0cHM6Ly8weGFjLmNuL2xpY2Vuc2VzLw==" rel="noopener external nofollow noreferrer" target="_blank">GNU FDLv1.3</a> 许可协议。转载请注明来自 <a href="https://hxac.github.io" target="_blank">只是笔记</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%BF%90%E7%BB%B4/">运维</a></div><div class="post_share"></div></div><hr class="custom-hr"/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="artalk-wrap"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content is-expand"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">OpenWrt LEDE 固件编译</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="toc-number">1.1.</span> <span class="toc-text">环境准备</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">编译</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87-2"><span class="toc-number">2.1.</span> <span class="toc-text">环境准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%BA%90%E7%A0%81%E5%87%86%E5%A4%87"><span class="toc-number">2.2.</span> <span class="toc-text">源码准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E7%9B%AE%E6%A0%87%E9%85%8D%E7%BD%AE"><span class="toc-number">2.3.</span> <span class="toc-text">编译目标配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91"><span class="toc-number">2.4.</span> <span class="toc-text">编译</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E6%AC%A1%E7%BC%96%E8%AF%91"><span class="toc-number">2.5.</span> <span class="toc-text">二次编译</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">使用 Action 编译</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">一般故障排除</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BC%96%E8%AF%91%E6%97%B6%E6%95%85%E9%9A%9C"><span class="toc-number">4.1.</span> <span class="toc-text">编译时故障</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E9%97%AE%E9%A2%98"><span class="toc-number">4.1.1.</span> <span class="toc-text">网络问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#root-%E4%B8%8B%E7%BC%96%E8%AF%91%E5%A4%B1%E8%B4%A5"><span class="toc-number">4.1.2.</span> <span class="toc-text">root 下编译失败</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8D%E6%96%B0%E9%85%8D%E7%BD%AE-feeds-%E5%90%8E%E7%BC%96%E8%AF%91%E9%94%99%E8%AF%AF"><span class="toc-number">4.1.3.</span> <span class="toc-text">重新配置 feeds 后编译错误</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9B%B4%E6%8D%A2%E7%9B%AE%E6%A0%87%E6%9E%B6%E6%9E%84-%E5%87%BA%E9%94%99"><span class="toc-number">4.1.4.</span> <span class="toc-text">更换目标架构&#x2F;出错</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E4%B8%8D%E8%B6%B3"><span class="toc-number">4.1.5.</span> <span class="toc-text">内存不足</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A7%E5%B0%8F%E5%86%99%E6%95%85%E9%9A%9C"><span class="toc-number">4.1.6.</span> <span class="toc-text">大小写故障</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E6%97%B6%E6%95%85%E9%9A%9C"><span class="toc-number">4.2.</span> <span class="toc-text">使用时故障</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%95%9C%E5%83%8F%E7%A9%BA%E9%97%B4%E4%B8%8D%E8%B6%B3"><span class="toc-number">4.2.1.</span> <span class="toc-text">镜像空间不足</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IPv6-%E6%94%AF%E6%8C%81"><span class="toc-number">4.2.2.</span> <span class="toc-text">IPv6 支持</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%B7%E5%9B%BA%E4%BB%B6%E5%90%8E%E7%94%A8%E4%B8%8D%E4%BA%86-Wifi"><span class="toc-number">4.2.3.</span> <span class="toc-text">刷固件后用不了 Wifi</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8D%A2%E6%BA%90"><span class="toc-number">4.2.4.</span> <span class="toc-text">换源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%A7%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0"><span class="toc-number">4.2.5.</span> <span class="toc-text">大文件上传</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8A%E4%BC%A0%E5%86%99%E5%85%A5-eMMC"><span class="toc-number">4.2.6.</span> <span class="toc-text">上传写入 eMMC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E5%8C%BA%E6%8B%93%E5%B1%95"><span class="toc-number">4.2.7.</span> <span class="toc-text">分区拓展</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E6%8D%9F%E5%9D%8F"><span class="toc-number">4.3.</span> <span class="toc-text">文件损坏</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%AA%E8%AF%BB%E6%8C%82%E8%BD%BD"><span class="toc-number">4.3.0.1.</span> <span class="toc-text">只读挂载</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E5%A4%8D%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="toc-number">4.3.0.2.</span> <span class="toc-text">修复文件系统</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">5.</span> <span class="toc-text">参考资料</span></a></li></ol></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2023 By 白勺</div><div class="framework-info"><span>框架 </span><a target="_blank" href="https://hxac.github.io/go/#aHR0cHM6Ly9oZXhvLmlv" rel="noopener external nofollow noreferrer">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" href="https://hxac.github.io/go/#aHR0cHM6Ly9naXRodWIuY29tL2plcnJ5YzEyNy9oZXhvLXRoZW1lLWJ1dHRlcmZseQ==" rel="noopener external nofollow noreferrer">Butterfly</a></div><div class="footer_custom_text"><div class="beian"><span><a href="https://hxac.github.io/go/#aHR0cDovL2JlaWFuLm1paXQuZ292LmNuLw==" rel="noopener external nofollow noreferrer" target="_blank">粤ICP备2023092589号-1</a></span><span class="footer-separator">|</span><span><a href="https://hxac.github.io/go/#aHR0cDovL3d3dy5iZWlhbi5nb3YuY24vcG9ydGFsL3JlZ2lzdGVyU3lzdGVtSW5mbz9yZWNvcmRjb2RlPTQ0MDExMjAyMDAyMzU3" rel="noopener external nofollow noreferrer" class="beian-police" target="_blank"><span>粤公网安备44011202002357号</span></a></span></div></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>function loadArtalk () {
+  function initArtalk () {
+    window.artalkItem = new Artalk(Object.assign({
+      el: '#artalk-wrap',
+      server: 'https://api.0xac.cn/',
+      site: '',
+      pageKey: location.pathname,
+      darkMode: document.documentElement.getAttribute('data-theme') === 'dark',
+      countEl: '.artalk-count'
+    },null))
+
+    if (GLOBAL_CONFIG.lightbox === 'null') return
+    window.artalkItem.use(ctx => {
+      ctx.on('list-loaded', () => {
+        ctx.getCommentList().forEach(comment => {
+          const $content = comment.getRender().$content
+          btf.loadLightbox($content.querySelectorAll('img:not([atk-emoticon])'))
+        })
+      })
+    })
+  }
+
+  if (typeof window.artalkItem === 'object') initArtalk()
+  else {
+    getCSS('https://cdn.jsdelivr.net/npm/artalk/dist/Artalk.min.css').then(()=>{
+      getScript('https://cdn.jsdelivr.net/npm/artalk/dist/Artalk.min.js').then(initArtalk)
+    })
+  }
+}
+
+function artalkChangeMode (theme) {
+  const artalkWrap = document.getElementById('artalk-wrap')
+  if (!(artalkWrap && artalkWrap.children.length)) return
+  const isDark = theme === 'dark'
+  window.artalkItem.setDarkMode(isDark)
+}
+
+btf.addModeChange('artalk', artalkChangeMode)
+
+if ('Artalk' === 'Artalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('artalk-wrap'), loadArtalk)
+  else loadArtalk()
+} else {
+  function loadOtherComment () {
+    loadArtalk()
+  }
+}</script></div><script data-pjax src="/js/custom.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div class="no-result" id="local-search-results"></div><div id="local-search-stats-wrap"></div></div></div><div id="search-mask"></div><script src="/js/search/local-search.js"></script></div></div></body></html>
