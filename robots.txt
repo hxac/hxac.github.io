@@ -1,0 +1,8 @@
+User-agent: *   
+Allow: /  
+Disallow: /js/  
+Disallow: /css/
+Disallow: /img/  
+
+Disallow: /tags/
+Sitemap: https://0xac.cn/sitemap.xml
