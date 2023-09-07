@@ -2,6 +2,33 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://hxac.github.io/licenses/</loc>
+    
+    <lastmod>2023-09-07</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://hxac.github.io/link/</loc>
+    
+    <lastmod>2023-09-07</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://hxac.github.io/tags/</loc>
+    
+    <lastmod>2023-09-07</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://hxac.github.io/2023/08/Blog-%E6%90%AD%E5%BB%BA%E5%B0%8F%E8%AE%B0/</loc>
     
     <lastmod>2023-09-07</lastmod>
@@ -84,33 +111,6 @@
   
   <url>
     <loc>https://hxac.github.io/about/</loc>
-    
-    <lastmod>2023-09-07</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://hxac.github.io/licenses/</loc>
-    
-    <lastmod>2023-09-07</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://hxac.github.io/link/</loc>
-    
-    <lastmod>2023-09-07</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://hxac.github.io/tags/</loc>
     
     <lastmod>2023-09-07</lastmod>
     
